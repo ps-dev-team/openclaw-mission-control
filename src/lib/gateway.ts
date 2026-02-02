@@ -79,13 +79,11 @@ export async function getSessionHistory(agentId: string, sessionKey: string) {
 
 export async function getSessionStatus(agentId: string, sessionKey?: string) {
   try {
-    const params = sessionKey
-      ? `?sessionKey=${encodeURIComponent(sessionKey)}`
-      : '';
-    const data = (await gatewayFetch(
-      agentId,
-      `/api/session/status${params}`,
-    )) as { ok: boolean; result?: unknown };
+    const params = sessionKey ? `?sessionKey=${encodeURIComponent(sessionKey)}` : '';
+    const data = (await gatewayFetch(agentId, `/api/session/status${params}`)) as {
+      ok: boolean;
+      result?: unknown;
+    };
     return data?.result ?? data ?? {};
   } catch {
     return {};
@@ -129,6 +127,18 @@ export async function getGatewayConfig(agentId: string) {
   }
 }
 
+export async function getGatewayConfigJson(agentId: string): Promise<Record<string, unknown>> {
+  try {
+    const data = (await gatewayFetch(agentId, '/api/config')) as {
+      ok: boolean;
+      result?: Record<string, unknown>;
+    };
+    return (data?.result as Record<string, unknown>) ?? {};
+  } catch {
+    return {};
+  }
+}
+
 export async function readFile(agentId: string, filePath: string) {
   try {
     const data = (await gatewayFetch(agentId, '/api/files/read', {
@@ -142,11 +152,7 @@ export async function readFile(agentId: string, filePath: string) {
   }
 }
 
-export async function writeFile(
-  agentId: string,
-  filePath: string,
-  content: string,
-) {
+export async function writeFile(agentId: string, filePath: string, content: string) {
   return gatewayFetch(agentId, '/api/files/write', {
     method: 'POST',
     body: { path: filePath, content },

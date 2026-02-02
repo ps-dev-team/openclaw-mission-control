@@ -13,6 +13,7 @@ import {
   getCronJobs,
   getCronRuns,
   getGatewayConfig,
+  getGatewayConfigJson,
   readFile,
   writeFile,
   listFiles,
@@ -47,17 +48,11 @@ export async function fetchSessions(agentId: string) {
   return getSessions(agentId);
 }
 
-export async function fetchSessionHistory(
-  agentId: string,
-  sessionKey: string,
-) {
+export async function fetchSessionHistory(agentId: string, sessionKey: string) {
   return getSessionHistory(agentId, sessionKey);
 }
 
-export async function fetchSessionStatus(
-  agentId: string,
-  sessionKey?: string,
-) {
+export async function fetchSessionStatus(agentId: string, sessionKey?: string) {
   return getSessionStatus(agentId, sessionKey);
 }
 
@@ -73,15 +68,15 @@ export async function fetchConfig(agentId: string) {
   return getGatewayConfig(agentId);
 }
 
+export async function fetchConfigJson(agentId: string) {
+  return getGatewayConfigJson(agentId);
+}
+
 export async function fetchFile(agentId: string, path: string) {
   return readFile(agentId, path);
 }
 
-export async function saveFile(
-  agentId: string,
-  path: string,
-  content: string,
-) {
+export async function saveFile(agentId: string, path: string, content: string) {
   return writeFile(agentId, path, content);
 }
 

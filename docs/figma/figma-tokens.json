@@ -1,0 +1,206 @@
+{
+  "colors": {
+    "#111111": 153,
+    "#cbcbcb": 30,
+    "#e1e1e1": 20,
+    "#ffffff": 6,
+    "#d9d9d9": 4,
+    "#d1d1d1": 2,
+    "#00a955": 1,
+    "#020101": 1,
+    "#e90303": 1
+  },
+  "fonts": {
+    "Inter 600": 16,
+    "Geist Mono 700": 16,
+    "Geist Mono 600": 14,
+    "Inter 700": 12,
+    "Geist Mono 900": 6,
+    "Inter 400": 6,
+    "Audiowide 400": 2,
+    "Geist Mono 500": 2
+  },
+  "fontSizes": {
+    "10": 6,
+    "12": 24,
+    "14": 16,
+    "16": 16,
+    "18": 8,
+    "20": 2,
+    "32": 2
+  },
+  "spacing": {
+    "4": 32,
+    "6": 2,
+    "8": 122,
+    "10": 26,
+    "12": 170,
+    "16": 28,
+    "17": 2,
+    "24": 50
+  },
+  "borderRadii": {
+    "4": 6,
+    "8": 24,
+    "12": 30,
+    "112": 4
+  },
+  "effects": [
+    {
+      "type": "BACKGROUND_BLUR",
+      "radius": 20.0,
+      "offset": null,
+      "color": null
+    },
+    {
+      "type": "DROP_SHADOW",
+      "radius": 24.0,
+      "offset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "color": "rgba(0, 0, 0, 0.04)"
+    },
+    {
+      "type": "BACKGROUND_BLUR",
+      "radius": 20.0,
+      "offset": null,
+      "color": null
+    },
+    {
+      "type": "DROP_SHADOW",
+      "radius": 24.0,
+      "offset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "color": "rgba(0, 0, 0, 0.04)"
+    },
+    {
+      "type": "BACKGROUND_BLUR",
+      "radius": 20.0,
+      "offset": null,
+      "color": null
+    },
+    {
+      "type": "DROP_SHADOW",
+      "radius": 24.0,
+      "offset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "color": "rgba(0, 0, 0, 0.04)"
+    },
+    {
+      "type": "BACKGROUND_BLUR",
+      "radius": 20.0,
+      "offset": null,
+      "color": null
+    },
+    {
+      "type": "DROP_SHADOW",
+      "radius": 24.0,
+      "offset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "color": "rgba(0, 0, 0, 0.04)"
+    },
+    {
+      "type": "BACKGROUND_BLUR",
+      "radius": 20.0,
+      "offset": null,
+      "color": null
+    },
+    {
+      "type": "DROP_SHADOW",
+      "radius": 24.0,
+      "offset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "color": "rgba(0, 0, 0, 0.04)"
+    },
+    {
+      "type": "BACKGROUND_BLUR",
+      "radius": 20.0,
+      "offset": null,
+      "color": null
+    },
+    {
+      "type": "DROP_SHADOW",
+      "radius": 24.0,
+      "offset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "color": "rgba(0, 0, 0, 0.04)"
+    },
+    {
+      "type": "BACKGROUND_BLUR",
+      "radius": 20.0,
+      "offset": null,
+      "color": null
+    },
+    {
+      "type": "DROP_SHADOW",
+      "radius": 24.0,
+      "offset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "color": "rgba(0, 0, 0, 0.04)"
+    },
+    {
+      "type": "BACKGROUND_BLUR",
+      "radius": 20.0,
+      "offset": null,
+      "color": null
+    },
+    {
+      "type": "DROP_SHADOW",
+      "radius": 24.0,
+      "offset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "color": "rgba(0, 0, 0, 0.04)"
+    },
+    {
+      "type": "BACKGROUND_BLUR",
+      "radius": 20.0,
+      "offset": null,
+      "color": null
+    },
+    {
+      "type": "DROP_SHADOW",
+      "radius": 24.0,
+      "offset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "color": "rgba(0, 0, 0, 0.04)"
+    },
+    {
+      "type": "BACKGROUND_BLUR",
+      "radius": 20.0,
+      "offset": null,
+      "color": null
+    },
+    {
+      "type": "DROP_SHADOW",
+      "radius": 24.0,
+      "offset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "color": "rgba(0, 0, 0, 0.04)"
+    }
+  ],
+  "publishedStyles": {
+    "2:56": {
+      "name": "Card",
+      "type": null
+    }
+  }
+}

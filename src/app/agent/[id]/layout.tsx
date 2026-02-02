@@ -1,5 +1,4 @@
 import { getAgents } from '@/lib/cookies';
-import { Sidebar } from '@/components/sidebar';
 import { redirect } from 'next/navigation';
 
 export default async function AgentLayout({
@@ -17,12 +16,8 @@ export default async function AgentLayout({
     redirect('/');
   }
 
-  return (
-    <div className="flex min-h-screen bg-bg-primary">
-      <Sidebar agents={agents} activeAgentId={id} />
-      <main className="flex-1 overflow-y-auto">
-        <div className="p-6">{children}</div>
-      </main>
-    </div>
-  );
+  // The DashboardLayout (client component) is now rendered per-page
+  // so each page can pass isOnline and activePage properly.
+  // This layout just validates the agent exists.
+  return <>{children}</>;
 }

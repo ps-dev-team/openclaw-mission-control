@@ -3,6 +3,9 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import { Settings, Shield, RefreshCw } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Panel, LoadingSpinner } from '@/components/panel';
 import { fetchConfig } from '@/app/actions';
 
@@ -15,10 +18,8 @@ export default function ConfigPage() {
   const load = useCallback(async () => {
     try {
       const data = await fetchConfig(agentId);
-      // Try to pretty-print JSON
       try {
-        const parsed = JSON.parse(data);
-        setConfig(JSON.stringify(parsed, null, 2));
+        setConfig(JSON.stringify(JSON.parse(data), null, 2));
       } catch {
         setConfig(data);
       }
@@ -37,21 +38,17 @@ export default function ConfigPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-text-primary flex items-center gap-3">
-          <Settings className="h-6 w-6 text-text-secondary" />
+        <h1 className="flex items-center gap-3 text-xl font-bold">
+          <Settings className="h-6 w-6 text-muted-foreground" />
           Configuration
         </h1>
         <div className="flex items-center gap-2">
-          <span className="flex items-center gap-1.5 text-xs text-text-muted">
-            <Shield className="h-3.5 w-3.5" />
-            Secrets are masked
-          </span>
-          <button
-            onClick={load}
-            className="rounded-lg border border-border p-1.5 text-text-muted hover:bg-bg-tertiary transition-colors"
-          >
+          <Badge variant="outline" className="gap-1.5">
+            <Shield className="h-3.5 w-3.5" /> Secrets masked
+          </Badge>
+          <Button variant="outline" size="icon" className="h-8 w-8" onClick={load}>
             <RefreshCw className="h-4 w-4" />
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -60,9 +57,9 @@ export default function ConfigPage() {
         description="Read-only — secrets automatically sanitized"
         icon={<Settings className="h-4 w-4" />}
       >
-        <pre className="max-h-[70vh] overflow-auto rounded-lg bg-bg-primary p-4 text-xs text-text-secondary font-mono border border-border">
-          {config}
-        </pre>
+        <ScrollArea className="max-h-[70vh]">
+          <pre className="rounded-lg bg-muted p-4 text-xs font-mono">{config}</pre>
+        </ScrollArea>
       </Panel>
     </div>
   );

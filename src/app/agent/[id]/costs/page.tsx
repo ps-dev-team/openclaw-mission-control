@@ -3,6 +3,15 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import { DollarSign, TrendingUp, Zap } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { Panel, EmptyState, LoadingSpinner, StatCard } from '@/components/panel';
 import { fetchSessions, fetchSessionStatus } from '@/app/actions';
 
@@ -25,44 +34,35 @@ export default function CostsPage() {
     try {
       const sessions = await fetchSessions(agentId);
       const sessionList = Array.isArray(sessions) ? sessions : [];
-
       const costData: SessionCost[] = [];
+
       for (const session of sessionList.slice(0, 20)) {
         const s = session as Record<string, unknown>;
         const key = String(s.key ?? s.sessionKey ?? '');
         if (!key) continue;
-
         try {
           const status = (await fetchSessionStatus(agentId, key)) as Record<
             string,
             unknown
           >;
-          const tokens = status.tokens as
-            | { input?: number; output?: number }
-            | undefined;
+          const tokens = status.tokens as { input?: number; output?: number } | undefined;
           costData.push({
             key,
             label: String(s.label ?? key.slice(0, 12)),
             model: String(status.model ?? '—'),
-            inputTokens:
-              tokens?.input ??
-              (status.inputTokens as number | undefined) ??
-              0,
-            outputTokens:
-              tokens?.output ??
-              (status.outputTokens as number | undefined) ??
-              0,
-            cost: (status.cost as number | undefined) ?? 0,
+            inputTokens: tokens?.input ?? (status.inputTokens as number) ?? 0,
+            outputTokens: tokens?.output ?? (status.outputTokens as number) ?? 0,
+            cost: (status.cost as number) ?? 0,
           });
         } catch {
-          // skip
+          /* skip */
         }
       }
 
       costData.sort((a, b) => b.cost - a.cost);
       setCosts(costData);
     } catch {
-      // ignore
+      /* ignore */
     }
     setLoading(false);
   }, [agentId]);
@@ -79,12 +79,11 @@ export default function CostsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-xl font-bold text-text-primary flex items-center gap-3">
+      <h1 className="flex items-center gap-3 text-xl font-bold">
         <DollarSign className="h-6 w-6 text-success" />
         Costs & Usage
       </h1>
 
-      {/* Summary Stats */}
       <div className="grid grid-cols-4 gap-4">
         <StatCard
           label="Total Cost"
@@ -101,14 +100,9 @@ export default function CostsPage() {
           value={totalOutput.toLocaleString()}
           subtitle="Total generated"
         />
-        <StatCard
-          label="Sessions"
-          value={costs.length}
-          subtitle="With cost data"
-        />
+        <StatCard label="Sessions" value={costs.length} subtitle="With cost data" />
       </div>
 
-      {/* Cost Breakdown */}
       {costs.length > 0 ? (
         <Panel
           title="Cost by Session"
@@ -116,38 +110,35 @@ export default function CostsPage() {
           icon={<TrendingUp className="h-4 w-4" />}
           noPadding
         >
-          <div className="divide-y divide-border">
-            {/* Header */}
-            <div className="grid grid-cols-5 gap-4 px-5 py-3 text-xs font-medium text-text-muted">
-              <span className="col-span-2">Session</span>
-              <span className="text-right">Input</span>
-              <span className="text-right">Output</span>
-              <span className="text-right">Cost</span>
-            </div>
-            {/* Rows */}
-            {costs.map((cost) => (
-              <div
-                key={cost.key}
-                className="grid grid-cols-5 gap-4 px-5 py-3 text-sm hover:bg-bg-tertiary transition-colors"
-              >
-                <div className="col-span-2">
-                  <p className="text-text-primary font-mono text-xs truncate">
-                    {cost.label}
-                  </p>
-                  <p className="text-xs text-text-muted">{cost.model}</p>
-                </div>
-                <span className="text-right text-text-secondary font-mono text-xs">
-                  {cost.inputTokens.toLocaleString()}
-                </span>
-                <span className="text-right text-text-secondary font-mono text-xs">
-                  {cost.outputTokens.toLocaleString()}
-                </span>
-                <span className="text-right font-mono text-xs font-medium text-success">
-                  ${cost.cost.toFixed(4)}
-                </span>
-              </div>
-            ))}
-          </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[40%]">Session</TableHead>
+                <TableHead className="text-right">Input</TableHead>
+                <TableHead className="text-right">Output</TableHead>
+                <TableHead className="text-right">Cost</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {costs.map((cost) => (
+                <TableRow key={cost.key}>
+                  <TableCell>
+                    <p className="font-mono text-xs">{cost.label}</p>
+                    <p className="text-xs text-muted-foreground">{cost.model}</p>
+                  </TableCell>
+                  <TableCell className="text-right font-mono text-xs">
+                    {cost.inputTokens.toLocaleString()}
+                  </TableCell>
+                  <TableCell className="text-right font-mono text-xs">
+                    {cost.outputTokens.toLocaleString()}
+                  </TableCell>
+                  <TableCell className="text-right font-mono text-xs font-medium text-success">
+                    ${cost.cost.toFixed(4)}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </Panel>
       ) : (
         <Panel title="Costs" icon={<DollarSign className="h-4 w-4" />}>

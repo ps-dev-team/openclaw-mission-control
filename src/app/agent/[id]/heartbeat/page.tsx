@@ -5,6 +5,9 @@ import { useParams } from 'next/navigation';
 import { Heart, Save, Eye, Edit3, Loader2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
 import { Panel, LoadingSpinner } from '@/components/panel';
 import { fetchFile, saveFile } from '@/app/actions';
 
@@ -24,7 +27,7 @@ export default function HeartbeatPage() {
       setContent(data);
       setOriginalContent(data);
     } catch {
-      // ignore
+      /* ignore */
     }
     setLoading(false);
   }, [agentId]);
@@ -43,59 +46,56 @@ export default function HeartbeatPage() {
       setEditing(false);
       setTimeout(() => setSaved(false), 3000);
     } catch {
-      // ignore
+      /* ignore */
     }
     setSaving(false);
   }
 
-  function handleCancel() {
-    setContent(originalContent);
-    setEditing(false);
-  }
-
   const hasChanges = content !== originalContent;
-
   if (loading) return <LoadingSpinner />;
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-text-primary flex items-center gap-3">
-          <Heart className="h-6 w-6 text-danger" />
+        <h1 className="flex items-center gap-3 text-xl font-bold">
+          <Heart className="h-6 w-6 text-destructive" />
           Heartbeat
         </h1>
         <div className="flex items-center gap-2">
           {saved && (
-            <span className="text-xs text-success">✓ Saved</span>
+            <Badge variant="outline" className="text-success border-success">
+              ✓ Saved
+            </Badge>
           )}
           {!editing ? (
-            <button
-              onClick={() => setEditing(true)}
-              className="flex items-center gap-2 rounded-lg border border-border px-3 py-1.5 text-sm text-text-secondary hover:bg-bg-tertiary transition-colors"
-            >
-              <Edit3 className="h-3.5 w-3.5" />
-              Edit
-            </button>
+            <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
+              <Edit3 className="mr-2 h-3.5 w-3.5" /> Edit
+            </Button>
           ) : (
             <>
-              <button
-                onClick={handleCancel}
-                className="rounded-lg border border-border px-3 py-1.5 text-sm text-text-muted hover:bg-bg-tertiary transition-colors"
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setContent(originalContent);
+                  setEditing(false);
+                }}
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
+                size="sm"
                 onClick={handleSave}
                 disabled={!hasChanges || saving}
-                className="flex items-center gap-2 rounded-lg bg-brand px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-hover transition-colors disabled:opacity-50"
+                className="bg-brand hover:bg-brand/90 text-brand-foreground"
               >
                 {saving ? (
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
                 ) : (
-                  <Save className="h-3.5 w-3.5" />
+                  <Save className="mr-2 h-3.5 w-3.5" />
                 )}
                 Save
-              </button>
+              </Button>
             </>
           )}
         </div>
@@ -106,32 +106,27 @@ export default function HeartbeatPage() {
         description="Controls what the agent checks periodically"
         icon={<Heart className="h-4 w-4" />}
         actions={
-          <div className="flex items-center gap-2">
-            {!editing && (
-              <span className="flex items-center gap-1 text-xs text-text-muted">
-                <Eye className="h-3 w-3" /> Preview
-              </span>
-            )}
-          </div>
+          !editing ? (
+            <Badge variant="outline" className="gap-1">
+              <Eye className="h-3 w-3" /> Preview
+            </Badge>
+          ) : undefined
         }
       >
         {editing ? (
-          <textarea
+          <Textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            className="w-full min-h-[400px] rounded-lg border border-border bg-bg-primary p-4 text-sm text-text-primary font-mono outline-none focus:border-accent resize-y"
+            className="min-h-[400px] font-mono text-sm resize-y"
             placeholder="# HEARTBEAT.md&#10;&#10;Add tasks for the agent to check periodically..."
           />
         ) : (
           <div className="markdown-content min-h-[200px]">
             {content.trim() ? (
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {content}
-              </ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
             ) : (
-              <p className="text-sm text-text-muted italic">
-                Empty — the agent will skip heartbeat checks. Click Edit to add
-                tasks.
+              <p className="text-sm italic text-muted-foreground">
+                Empty — the agent will skip heartbeat checks. Click Edit to add tasks.
               </p>
             )}
           </div>

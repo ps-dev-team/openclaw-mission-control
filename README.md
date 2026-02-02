@@ -6,6 +6,24 @@ Open-source dashboard for monitoring and managing AI agents running on [Clawdbot
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
+## Screenshots
+
+<p align="center">
+  <img src="docs/screenshots/landing.png" alt="Landing Page" width="700" />
+</p>
+
+<p align="center">
+  <em>Clean onboarding — connect your first agent in seconds</em>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/add-agent.png" alt="Add Agent" width="500" />
+</p>
+
+<p align="center">
+  <em>Secure agent connection — tokens stay server-side</em>
+</p>
+
 ## Features
 
 - **Agent State** — Real-time online/offline/active status with auto-polling
