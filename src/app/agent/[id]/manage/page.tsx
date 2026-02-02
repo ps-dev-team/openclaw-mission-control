@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { AlertTriangle, Trash2, Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { Panel } from '@/components/panel';
 import { deleteAgent } from '@/app/actions';
 
@@ -25,28 +26,24 @@ export default function ManageAgentPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-xl font-bold text-text-primary">Manage Agent</h1>
+      <h1 className="text-xl font-bold">Manage Agent</h1>
 
       <Panel
         title="Danger Zone"
-        icon={<AlertTriangle className="h-4 w-4 text-danger" />}
+        icon={<AlertTriangle className="h-4 w-4 text-destructive" />}
       >
-        <p className="text-sm text-text-secondary mb-4">
-          Remove this agent connection. This only removes it from the dashboard
-          — the agent itself keeps running.
+        <p className="mb-4 text-sm text-muted-foreground">
+          Remove this agent connection. This only removes it from the dashboard — the
+          agent itself keeps running.
         </p>
-        <button
-          onClick={handleDelete}
-          disabled={deleting}
-          className="flex items-center gap-2 rounded-lg bg-danger/10 border border-danger/30 px-4 py-2 text-sm font-medium text-danger hover:bg-danger/20 transition-colors disabled:opacity-50"
-        >
+        <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
           {deleting ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
-            <Trash2 className="h-4 w-4" />
+            <Trash2 className="mr-2 h-4 w-4" />
           )}
           {confirming ? 'Click again to confirm' : 'Remove Agent'}
-        </button>
+        </Button>
       </Panel>
     </div>
   );

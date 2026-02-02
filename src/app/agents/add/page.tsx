@@ -4,6 +4,15 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Loader2, Plug, Zap } from 'lucide-react';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { createAgent, fetchStatus } from '@/app/actions';
 
 export default function AddAgentPage() {
@@ -13,9 +22,7 @@ export default function AddAgentPage() {
   const [gatewayToken, setGatewayToken] = useState('');
   const [emoji, setEmoji] = useState('🤖');
   const [testing, setTesting] = useState(false);
-  const [testResult, setTestResult] = useState<
-    null | 'success' | 'error'
-  >(null);
+  const [testResult, setTestResult] = useState<null | 'success' | 'error'>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
@@ -37,7 +44,6 @@ export default function AddAgentPage() {
         setTestResult('error');
         setError('Could not connect. Check URL and token.');
       }
-      // Remove the temp agent if just testing
       const { deleteAgent } = await import('@/app/actions');
       await deleteAgent(agent.id);
     } catch {
@@ -67,128 +73,127 @@ export default function AddAgentPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-bg-primary p-4">
-      <div className="w-full max-w-md">
-        <Link
-          href="/"
-          className="mb-6 inline-flex items-center gap-2 text-sm text-text-muted hover:text-text-secondary"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back
-        </Link>
+    <div className="relative flex min-h-screen items-center justify-center p-4 overflow-hidden">
+      {/* Background gradient */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute left-1/3 top-1/4 h-[400px] w-[400px] rounded-full bg-brand/8 blur-[120px]" />
+        <div className="absolute right-1/3 bottom-1/4 h-[300px] w-[300px] rounded-full bg-chart-2/5 blur-[100px]" />
+      </div>
 
-        <div className="rounded-xl border border-border bg-bg-secondary p-6">
-          <div className="mb-6 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand/20 text-brand">
-              <Plug className="h-5 w-5" />
-            </div>
-            <div>
-              <h1 className="text-lg font-bold text-text-primary">
-                Add Agent
-              </h1>
-              <p className="text-xs text-text-muted">
-                Connect to a Clawdbot/OpenClaw gateway
-              </p>
-            </div>
-          </div>
+      <div className="relative z-10 w-full max-w-md">
+        <Button variant="ghost" size="sm" asChild className="mb-6">
+          <Link href="/">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back
+          </Link>
+        </Button>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="flex gap-3">
-              <div className="w-20">
-                <label className="mb-1.5 block text-xs font-medium text-text-secondary">
-                  Emoji
-                </label>
-                <input
-                  type="text"
-                  value={emoji}
-                  onChange={(e) => setEmoji(e.target.value)}
-                  className="w-full rounded-lg border border-border bg-bg-primary px-3 py-2 text-center text-lg text-text-primary outline-none focus:border-accent"
-                  maxLength={2}
-                />
+        <Card className="glow-brand">
+          <CardHeader>
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand/20 text-brand">
+                <Plug className="h-5 w-5" />
               </div>
-              <div className="flex-1">
-                <label className="mb-1.5 block text-xs font-medium text-text-secondary">
-                  Name
+              <div>
+                <CardTitle>Add Agent</CardTitle>
+                <CardDescription>Connect to a Clawdbot/OpenClaw gateway</CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="flex gap-3">
+                <div className="w-20">
+                  <label className="mb-1.5 block text-xs font-medium text-muted-foreground">
+                    Emoji
+                  </label>
+                  <Input
+                    value={emoji}
+                    onChange={(e) => setEmoji(e.target.value)}
+                    className="text-center text-lg"
+                    maxLength={2}
+                  />
+                </div>
+                <div className="flex-1">
+                  <label className="mb-1.5 block text-xs font-medium text-muted-foreground">
+                    Name
+                  </label>
+                  <Input
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="e.g. Berto"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="mb-1.5 block text-xs font-medium text-muted-foreground">
+                  Gateway URL
                 </label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. Berto"
-                  className="w-full rounded-lg border border-border bg-bg-primary px-3 py-2 text-sm text-text-primary placeholder-text-muted outline-none focus:border-accent"
+                <Input
+                  type="url"
+                  value={gatewayUrl}
+                  onChange={(e) => setGatewayUrl(e.target.value)}
+                  placeholder="https://your-server:18789"
+                  className="font-mono"
                   required
                 />
               </div>
-            </div>
 
-            <div>
-              <label className="mb-1.5 block text-xs font-medium text-text-secondary">
-                Gateway URL
-              </label>
-              <input
-                type="url"
-                value={gatewayUrl}
-                onChange={(e) => setGatewayUrl(e.target.value)}
-                placeholder="https://your-server:18789"
-                className="w-full rounded-lg border border-border bg-bg-primary px-3 py-2 text-sm text-text-primary placeholder-text-muted outline-none focus:border-accent font-mono"
-                required
-              />
-            </div>
+              <div>
+                <label className="mb-1.5 block text-xs font-medium text-muted-foreground">
+                  Gateway Token
+                </label>
+                <Input
+                  type="password"
+                  value={gatewayToken}
+                  onChange={(e) => setGatewayToken(e.target.value)}
+                  placeholder="••••••••••"
+                  className="font-mono"
+                  required
+                />
+              </div>
 
-            <div>
-              <label className="mb-1.5 block text-xs font-medium text-text-secondary">
-                Gateway Token
-              </label>
-              <input
-                type="password"
-                value={gatewayToken}
-                onChange={(e) => setGatewayToken(e.target.value)}
-                placeholder="••••••••••"
-                className="w-full rounded-lg border border-border bg-bg-primary px-3 py-2 text-sm text-text-primary placeholder-text-muted outline-none focus:border-accent font-mono"
-                required
-              />
-            </div>
+              {error && <p className="text-xs text-destructive">{error}</p>}
 
-            {error && (
-              <p className="text-xs text-danger">{error}</p>
-            )}
+              {testResult === 'success' && (
+                <p className="flex items-center gap-1.5 text-xs text-success">
+                  <Zap className="h-3.5 w-3.5" />
+                  Connection successful!
+                </p>
+              )}
 
-            {testResult === 'success' && (
-              <p className="flex items-center gap-1.5 text-xs text-success">
-                <Zap className="h-3.5 w-3.5" />
-                Connection successful!
-              </p>
-            )}
-
-            <div className="flex gap-2 pt-2">
-              <button
-                type="button"
-                onClick={handleTest}
-                disabled={!gatewayUrl || !gatewayToken || testing}
-                className="flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm text-text-secondary transition-colors hover:bg-bg-tertiary disabled:opacity-50"
-              >
-                {testing ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Zap className="h-4 w-4" />
-                )}
-                Test
-              </button>
-              <button
-                type="submit"
-                disabled={!name || !gatewayUrl || !gatewayToken || saving}
-                className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-hover disabled:opacity-50"
-              >
-                {saving ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Plug className="h-4 w-4" />
-                )}
-                Connect
-              </button>
-            </div>
-          </form>
-        </div>
+              <div className="flex gap-2 pt-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleTest}
+                  disabled={!gatewayUrl || !gatewayToken || testing}
+                >
+                  {testing ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Zap className="mr-2 h-4 w-4" />
+                  )}
+                  Test
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={!name || !gatewayUrl || !gatewayToken || saving}
+                  className="flex-1 bg-brand hover:bg-brand/90 text-brand-foreground"
+                >
+                  {saving ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Plug className="mr-2 h-4 w-4" />
+                  )}
+                  Connect
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

@@ -5,6 +5,9 @@ import { useParams } from 'next/navigation';
 import { Brain, FileText, Search } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Panel, EmptyState, LoadingSpinner } from '@/components/panel';
 import { fetchFile, fetchFileList } from '@/app/actions';
 
@@ -53,39 +56,43 @@ export default function MemoryPage() {
   const filteredContent = search
     ? memoryMd
         .split('\n')
-        .filter((line) => line.toLowerCase().includes(search.toLowerCase()))
+        .filter((l) => l.toLowerCase().includes(search.toLowerCase()))
         .join('\n')
     : memoryMd;
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-text-primary flex items-center gap-3">
+        <h1 className="flex items-center gap-3 text-xl font-bold">
           <Brain className="h-6 w-6 text-brand" />
           Memory
         </h1>
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
-          <input
-            type="text"
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search memory..."
-            className="rounded-lg border border-border bg-bg-secondary py-2 pl-9 pr-4 text-sm text-text-primary placeholder-text-muted outline-none focus:border-accent"
+            className="pl-9 w-64"
           />
         </div>
       </div>
 
       <div className="grid grid-cols-3 gap-6">
-        {/* MEMORY.md */}
         <div className="col-span-2">
-          <Panel title="MEMORY.md" description="Long-term memory" icon={<Brain className="h-4 w-4" />}>
+          <Panel
+            title="MEMORY.md"
+            description="Long-term memory"
+            icon={<Brain className="h-4 w-4" />}
+          >
             {memoryMd ? (
-              <div className="markdown-content max-h-[70vh] overflow-y-auto">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {filteredContent}
-                </ReactMarkdown>
-              </div>
+              <ScrollArea className="max-h-[70vh]">
+                <div className="markdown-content">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {filteredContent}
+                  </ReactMarkdown>
+                </div>
+              </ScrollArea>
             ) : (
               <EmptyState
                 icon={<Brain className="h-6 w-6" />}
@@ -96,7 +103,6 @@ export default function MemoryPage() {
           </Panel>
         </div>
 
-        {/* Daily Notes Sidebar */}
         <div className="space-y-4">
           <Panel
             title="Daily Notes"
@@ -104,43 +110,39 @@ export default function MemoryPage() {
             icon={<FileText className="h-4 w-4" />}
             noPadding
           >
-            <div className="max-h-[30vh] overflow-y-auto">
+            <ScrollArea className="max-h-[30vh]">
               {dailyFiles.length > 0 ? (
                 dailyFiles.map((file) => (
-                  <button
+                  <Button
                     key={file}
+                    variant={selectedFile === file ? 'secondary' : 'ghost'}
+                    className="w-full justify-start rounded-none h-10 font-mono text-xs"
                     onClick={() => loadFile(file)}
-                    className={`w-full px-4 py-2.5 text-left text-sm transition-colors hover:bg-bg-tertiary ${
-                      selectedFile === file
-                        ? 'bg-bg-tertiary text-accent'
-                        : 'text-text-secondary'
-                    }`}
                   >
-                    <span className="font-mono text-xs">
-                      {file.replace('.md', '')}
-                    </span>
-                  </button>
+                    {file.replace('.md', '')}
+                  </Button>
                 ))
               ) : (
-                <div className="p-4 text-xs text-text-muted text-center">
+                <div className="p-4 text-center text-xs text-muted-foreground">
                   No daily notes found
                 </div>
               )}
-            </div>
+            </ScrollArea>
           </Panel>
 
-          {/* Selected Daily Note */}
           {selectedFile && (
             <Panel
               title={selectedFile.replace('.md', '')}
               description="Daily note"
               icon={<FileText className="h-4 w-4" />}
             >
-              <div className="markdown-content max-h-[40vh] overflow-y-auto">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {selectedContent}
-                </ReactMarkdown>
-              </div>
+              <ScrollArea className="max-h-[40vh]">
+                <div className="markdown-content">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {selectedContent}
+                  </ReactMarkdown>
+                </div>
+              </ScrollArea>
             </Panel>
           )}
         </div>

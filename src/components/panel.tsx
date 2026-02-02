@@ -1,4 +1,12 @@
-import clsx from 'clsx';
+import { cn } from '@/lib/utils';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import type { ReactNode } from 'react';
 
 interface PanelProps {
@@ -21,30 +29,25 @@ export function Panel({
   noPadding,
 }: PanelProps) {
   return (
-    <div
-      className={clsx(
-        'rounded-xl border border-border bg-bg-secondary',
-        className,
-      )}
-    >
-      <div className="flex items-center justify-between border-b border-border px-5 py-4">
+    <Card className={cn('bg-card', className)}>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
         <div className="flex items-center gap-3">
           {icon && (
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-bg-tertiary text-text-secondary">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
               {icon}
             </div>
           )}
           <div>
-            <h2 className="text-sm font-semibold text-text-primary">{title}</h2>
+            <CardTitle className="text-sm font-semibold">{title}</CardTitle>
             {description && (
-              <p className="text-xs text-text-muted">{description}</p>
+              <CardDescription className="text-xs">{description}</CardDescription>
             )}
           </div>
         </div>
         {actions && <div className="flex items-center gap-2">{actions}</div>}
-      </div>
-      <div className={clsx(!noPadding && 'p-5')}>{children}</div>
-    </div>
+      </CardHeader>
+      <CardContent className={cn(noPadding && 'p-0')}>{children}</CardContent>
+    </Card>
   );
 }
 
@@ -55,26 +58,28 @@ interface StatusBadgeProps {
 
 export function StatusBadge({ status, label }: StatusBadgeProps) {
   const config = {
-    online: { color: 'bg-success', text: 'Online' },
-    offline: { color: 'bg-danger', text: 'Offline' },
-    active: { color: 'bg-accent', text: 'Active' },
-    idle: { color: 'bg-warning', text: 'Idle' },
-    error: { color: 'bg-danger', text: 'Error' },
+    online: { variant: 'default' as const, dotClass: 'bg-success', text: 'Online' },
+    offline: {
+      variant: 'destructive' as const,
+      dotClass: 'bg-destructive',
+      text: 'Offline',
+    },
+    active: {
+      variant: 'default' as const,
+      dotClass: 'bg-chart-1 animate-pulse-dot',
+      text: 'Active',
+    },
+    idle: { variant: 'secondary' as const, dotClass: 'bg-warning', text: 'Idle' },
+    error: { variant: 'destructive' as const, dotClass: 'bg-destructive', text: 'Error' },
   };
 
-  const { color, text } = config[status];
+  const { variant, dotClass, text } = config[status];
 
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-bg-tertiary px-2.5 py-1 text-xs font-medium text-text-secondary">
-      <span
-        className={clsx(
-          'h-2 w-2 rounded-full',
-          color,
-          status === 'active' && 'animate-pulse-dot',
-        )}
-      />
+    <Badge variant={variant} className="gap-1.5 font-medium">
+      <span className={cn('h-2 w-2 rounded-full', dotClass)} />
       {label ?? text}
-    </span>
+    </Badge>
   );
 }
 
@@ -82,20 +87,17 @@ interface StatCardProps {
   label: string;
   value: string | number;
   subtitle?: string;
-  trend?: 'up' | 'down' | 'neutral';
 }
 
 export function StatCard({ label, value, subtitle }: StatCardProps) {
   return (
-    <div className="rounded-xl border border-border bg-bg-secondary p-4">
-      <p className="text-xs font-medium text-text-muted">{label}</p>
-      <p className="mt-1 text-2xl font-bold text-text-primary font-mono">
-        {value}
-      </p>
-      {subtitle && (
-        <p className="mt-0.5 text-xs text-text-muted">{subtitle}</p>
-      )}
-    </div>
+    <Card>
+      <CardContent className="pt-5">
+        <p className="text-xs font-medium text-muted-foreground">{label}</p>
+        <p className="mt-1 text-2xl font-bold font-mono">{value}</p>
+        {subtitle && <p className="mt-0.5 text-xs text-muted-foreground">{subtitle}</p>}
+      </CardContent>
+    </Card>
   );
 }
 
@@ -112,11 +114,11 @@ export function EmptyState({
 }) {
   return (
     <div className="flex flex-col items-center justify-center py-12 text-center">
-      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-bg-tertiary text-text-muted">
+      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-muted text-muted-foreground">
         {icon}
       </div>
-      <h3 className="text-sm font-medium text-text-primary">{title}</h3>
-      <p className="mt-1 text-xs text-text-muted max-w-xs">{description}</p>
+      <h3 className="text-sm font-medium">{title}</h3>
+      <p className="mt-1 max-w-xs text-xs text-muted-foreground">{description}</p>
       {action && <div className="mt-4">{action}</div>}
     </div>
   );
@@ -125,7 +127,7 @@ export function EmptyState({
 export function LoadingSpinner() {
   return (
     <div className="flex items-center justify-center py-12">
-      <div className="h-6 w-6 animate-spin rounded-full border-2 border-border border-t-accent" />
+      <div className="h-6 w-6 animate-spin rounded-full border-2 border-muted border-t-brand" />
     </div>
   );
 }

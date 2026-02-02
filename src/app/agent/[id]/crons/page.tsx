@@ -12,6 +12,8 @@ import {
   XCircle,
   Timer,
 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Panel, EmptyState, LoadingSpinner, StatusBadge } from '@/components/panel';
 import { fetchCronJobs, fetchCronRuns } from '@/app/actions';
 
@@ -49,10 +51,9 @@ export default function CronsPage() {
   const loadJobs = useCallback(async () => {
     try {
       const data = await fetchCronJobs(agentId);
-      const jobList = Array.isArray(data) ? data : [];
-      setJobs(jobList as CronJobData[]);
+      setJobs(Array.isArray(data) ? (data as CronJobData[]) : []);
     } catch {
-      // ignore
+      /* ignore */
     }
     setLoading(false);
   }, [agentId]);
@@ -70,8 +71,10 @@ export default function CronsPage() {
     if (!runs[jobId]) {
       try {
         const data = await fetchCronRuns(agentId, jobId);
-        const runList = Array.isArray(data) ? data : [];
-        setRuns((prev) => ({ ...prev, [jobId]: runList as CronRunData[] }));
+        setRuns((prev) => ({
+          ...prev,
+          [jobId]: Array.isArray(data) ? (data as CronRunData[]) : [],
+        }));
       } catch {
         setRuns((prev) => ({ ...prev, [jobId]: [] }));
       }
@@ -83,13 +86,11 @@ export default function CronsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-text-primary flex items-center gap-3">
+        <h1 className="flex items-center gap-3 text-xl font-bold">
           <Clock className="h-6 w-6 text-warning" />
           Cron Jobs
         </h1>
-        <span className="text-sm text-text-muted">
-          {jobs.length} jobs
-        </span>
+        <Badge variant="secondary">{jobs.length} jobs</Badge>
       </div>
 
       {jobs.length > 0 ? (
@@ -107,7 +108,7 @@ export default function CronsPage() {
                   isEnabled ? (
                     <Play className="h-4 w-4 text-success" />
                   ) : (
-                    <Pause className="h-4 w-4 text-text-muted" />
+                    <Pause className="h-4 w-4 text-muted-foreground" />
                   )
                 }
                 actions={
@@ -118,87 +119,76 @@ export default function CronsPage() {
                 }
               >
                 <div className="space-y-3">
-                  {/* Job Details */}
                   <div className="grid grid-cols-3 gap-4 text-xs">
                     <div>
-                      <span className="text-text-muted">Schedule</span>
-                      <p className="mt-0.5 text-text-secondary font-mono">
-                        {job.schedule || '—'}
+                      <span className="text-muted-foreground">Schedule</span>
+                      <p className="mt-0.5 font-mono">{job.schedule || '—'}</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Next Run</span>
+                      <p className="mt-0.5 font-mono">
+                        {job.nextRun ? new Date(job.nextRun).toLocaleString() : '—'}
                       </p>
                     </div>
                     <div>
-                      <span className="text-text-muted">Next Run</span>
-                      <p className="mt-0.5 text-text-secondary font-mono">
-                        {job.nextRun
-                          ? new Date(job.nextRun).toLocaleString()
-                          : '—'}
-                      </p>
-                    </div>
-                    <div>
-                      <span className="text-text-muted">Model</span>
-                      <p className="mt-0.5 text-text-secondary font-mono">
-                        {job.model || 'default'}
-                      </p>
+                      <span className="text-muted-foreground">Model</span>
+                      <p className="mt-0.5 font-mono">{job.model || 'default'}</p>
                     </div>
                   </div>
 
                   {job.text && (
                     <div className="text-xs">
-                      <span className="text-text-muted">Task</span>
-                      <p className="mt-0.5 text-text-secondary line-clamp-2">
-                        {job.text}
-                      </p>
+                      <span className="text-muted-foreground">Task</span>
+                      <p className="mt-0.5 line-clamp-2">{job.text}</p>
                     </div>
                   )}
 
-                  {/* Expand button */}
-                  <button
+                  <Button
+                    variant="ghost"
+                    size="sm"
                     onClick={() => toggleExpand(jobId)}
-                    className="flex items-center gap-1 text-xs text-accent hover:text-accent-hover transition-colors"
+                    className="h-7 px-2 text-xs text-brand"
                   >
                     {isExpanded ? (
-                      <ChevronDown className="h-3.5 w-3.5" />
+                      <ChevronDown className="mr-1 h-3.5 w-3.5" />
                     ) : (
-                      <ChevronRight className="h-3.5 w-3.5" />
+                      <ChevronRight className="mr-1 h-3.5 w-3.5" />
                     )}
                     Run History
-                  </button>
+                  </Button>
 
-                  {/* Run History */}
                   {isExpanded && (
-                    <div className="space-y-1.5 border-t border-border pt-3">
+                    <div className="space-y-1.5 border-t pt-3">
                       {(runs[jobId] ?? []).length > 0 ? (
                         (runs[jobId] ?? []).slice(0, 10).map((run, i) => (
                           <div
                             key={run.id ?? i}
-                            className="flex items-center justify-between rounded-lg bg-bg-primary px-3 py-2"
+                            className="flex items-center justify-between rounded-lg bg-muted px-3 py-2"
                           >
                             <div className="flex items-center gap-2">
                               {run.ok !== false && !run.error ? (
                                 <CheckCircle2 className="h-3.5 w-3.5 text-success" />
                               ) : (
-                                <XCircle className="h-3.5 w-3.5 text-danger" />
+                                <XCircle className="h-3.5 w-3.5 text-destructive" />
                               )}
-                              <span className="text-xs text-text-secondary font-mono">
+                              <span className="text-xs font-mono">
                                 {run.startedAt
                                   ? new Date(run.startedAt).toLocaleString()
                                   : '—'}
                               </span>
                             </div>
-                            <div className="flex items-center gap-2">
-                              {(run.duration || run.durationMs) && (
-                                <span className="flex items-center gap-1 text-xs text-text-muted">
-                                  <Timer className="h-3 w-3" />
-                                  {run.durationMs
-                                    ? `${(run.durationMs / 1000).toFixed(1)}s`
-                                    : `${run.duration}s`}
-                                </span>
-                              )}
-                            </div>
+                            {(run.duration || run.durationMs) && (
+                              <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                                <Timer className="h-3 w-3" />
+                                {run.durationMs
+                                  ? `${(run.durationMs / 1000).toFixed(1)}s`
+                                  : `${run.duration}s`}
+                              </span>
+                            )}
                           </div>
                         ))
                       ) : (
-                        <p className="text-xs text-text-muted text-center py-2">
+                        <p className="py-2 text-center text-xs text-muted-foreground">
                           No runs recorded
                         </p>
                       )}

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter, JetBrains_Mono } from 'next/font/google';
+import { Inter, Audiowide, Geist_Mono } from 'next/font/google';
 import './globals.css';
 
 const inter = Inter({
@@ -7,8 +7,14 @@ const inter = Inter({
   subsets: ['latin'],
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: '--font-jetbrains',
+const audiowide = Audiowide({
+  variable: '--font-audiowide',
+  weight: '400',
+  subsets: ['latin'],
+});
+
+const geistMono = Geist_Mono({
+  variable: '--font-geist-mono',
   subsets: ['latin'],
 });
 
@@ -26,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} antialiased font-sans`}
+        className={`${inter.variable} ${audiowide.variable} ${geistMono.variable} antialiased font-sans`}
       >
         {children}
       </body>
